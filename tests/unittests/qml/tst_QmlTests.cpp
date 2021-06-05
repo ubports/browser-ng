@@ -172,6 +172,7 @@ int main(int argc, char** argv)
 {
     const char* commonUri = "webbrowsercommon.private";
     qmlRegisterType<FaviconFetcher>(commonUri, 0, 1, "FaviconFetcher");
+    qmlRegisterSingletonType<FileOperations>(commonUri, 0, 1, "FileOperations", FileOperations_singleton_factory);
 
     const char* browserUri = "webbrowserapp.private";
     qmlRegisterType<SearchEngine>(browserUri, 0, 1, "SearchEngine");
@@ -184,7 +185,6 @@ int main(int argc, char** argv)
     qmlRegisterType<HistoryLastVisitDateListModel>(browserUri, 0, 1, "HistoryLastVisitDateListModel");
     qmlRegisterType<LimitProxyModel>(browserUri, 0, 1, "LimitProxyModel");
     qmlRegisterType<TextSearchFilterModel>(browserUri, 0, 1, "TextSearchFilterModel");
-    qmlRegisterSingletonType<FileOperations>(browserUri, 0, 1, "FileOperations", FileOperations_singleton_factory);
     qmlRegisterSingletonType<Reparenter>(browserUri, 0, 1, "Reparenter", Reparenter_singleton_factory);
 
     const char* testUri = "webbrowsertest.private";

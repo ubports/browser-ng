@@ -27,7 +27,7 @@ Item {
 
     QtObject {
         id: webviewMock
-        property bool fullscreen: false
+        property bool isFullScreen: false
     }
 
     Component {
@@ -79,10 +79,10 @@ Item {
             currentWindow.forceFullscreen = data.forceFullscreen
             currentWindow.visibility = data.state
             visibilitySpy.clear()
-            webviewMock.fullscreen = true
+            webviewMock.isFullScreen = true
             tryCompare(visibilitySpy, "count", data.forceFullscreen ? 0 : 1)
             compare(currentWindow.visibility, Window.FullScreen)
-            webviewMock.fullscreen = false
+            webviewMock.isFullScreen = false
             tryCompare(visibilitySpy, "count", data.forceFullscreen ? 0 : 2)
             compare(currentWindow.visibility, data.state)
         }

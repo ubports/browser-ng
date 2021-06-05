@@ -73,7 +73,7 @@ Item {
         }
         fontSize: "small"
         elide: (root.state == "expanded") ? Text.ElideNone : Text.ElideRight
-        text: ""//(root.webview && root.webview.visible) ? root.webview.hoveredUrl : ""
+        text: ""
         onTextChanged: {
             if (text) {
                 if (root.state == "hidden") {
@@ -85,5 +85,10 @@ Item {
                 root.state = "hidden"
             }
         }
+    }
+    
+    Connections {
+        target: root.webview
+        onLinkHovered: label.text = hoveredUrl.toString()
     }
 }

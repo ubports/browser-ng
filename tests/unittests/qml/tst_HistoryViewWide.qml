@@ -305,7 +305,7 @@ Item {
         function test_search_highlight() {
             function wraphtml(text) { return "<html>%1</html>".arg(text) }
             function highlight(term) {
-                return "<font color=\"%1\">%2</font>".arg("#752571").arg(term)
+                return "<b><font color=\"%1\">%2</font></b>".arg("#335280").arg(term)
             }
 
             var searchButton = findChild(historyViewWide, "search_button")

@@ -18,7 +18,7 @@
 
 import QtQuick 2.4
 import QtTest 1.0
-import com.canonical.Oxide 1.7 as Oxide
+import QtWebEngine 1.5
 import "../../../src/app"
 
 ChromeController {
@@ -26,15 +26,13 @@ ChromeController {
 
     Item {
         id: webviewMock
-        property bool loading: false
-        readonly property bool loadingState: loading
-        property bool fullscreen: false
+        property bool isFullScreen: false
         property var locationBarController: QtObject {
             property bool animated: false
             property int mode: controller.defaultMode
             signal show(bool animate)
         }
-        signal loadEvent(var event)
+        signal loadingChanged(var loadRequest)
     }
 
     SignalSpy {
@@ -48,16 +46,15 @@ ChromeController {
     TestCase {
         name: "ChromeController"
 
-        readonly property int modeAuto: Oxide.LocationBarController.ModeAuto
-        readonly property int modeShown: Oxide.LocationBarController.ModeShown
-        readonly property int modeHidden: Oxide.LocationBarController.ModeHidden
+        readonly property int modeAuto: 0
+        readonly property int modeShown: 1
+        readonly property int modeHidden: 2
 
         function init() {
             controller.forceHide = false
             controller.forceShow = false
             controller.defaultMode = modeAuto
-            webviewMock.loading = false
-            webviewMock.fullscreen = false
+            webviewMock.isFullScreen = false
             webviewMock.locationBarController.animated = false
             webviewMock.locationBarController.mode = controller.defaultMode
             showSpy.clear()
@@ -65,19 +62,19 @@ ChromeController {
 
         function test_change_webview_data() {
             return [
-                {forceHide: false, forceShow: false, fullscreen: false,
+                {forceHide: false, forceShow: false, isFullScreen: false,
                  mode: modeAuto, shown: true},
-                {forceHide: false, forceShow: true, fullscreen: false,
+                {forceHide: false, forceShow: true, isFullScreen: false,
                  mode: modeShown, shown: false},
-                {forceHide: false, forceShow: false, fullscreen: true,
+                {forceHide: false, forceShow: false, isFullScreen: true,
                  mode: modeAuto, shown: false},
-                {forceHide: false, forceShow: true, fullscreen: true,
+                {forceHide: false, forceShow: true, isFullScreen: true,
                  mode: modeShown, shown: false},
-                {forceHide: true, forceShow: false, fullscreen: true,
+                {forceHide: true, forceShow: false, isFullScreen: true,
                  mode: modeHidden, shown: false},
-                {forceHide: true, forceShow: true, fullscreen: false,
+                {forceHide: true, forceShow: true, isFullScreen: false,
                  mode: modeHidden, shown: false},
-                {forceHide: true, forceShow: true, fullscreen: true,
+                {forceHide: true, forceShow: true, isFullScreen: true,
                  mode: modeHidden, shown: false},
             ]
         }
@@ -86,7 +83,7 @@ ChromeController {
             controller.webview = null
             controller.forceHide = data.forceHide
             controller.forceShow = data.forceShow
-            webviewMock.fullscreen = data.fullscreen
+            webviewMock.isFullScreen = data.isFullScreen
             showSpy.clear()
             controller.webview = webviewMock
             compare(webviewMock.locationBarController.mode, data.mode)
@@ -95,20 +92,20 @@ ChromeController {
 
         function test_change_forceHide_data() {
             return [
-                {forceShow: false, fullscreen: false,
+                {forceShow: false, isFullScreen: false,
                  modes: [modeAuto, modeHidden, modeAuto], shown: 1},
-                {forceShow: true, fullscreen: false,
+                {forceShow: true, isFullScreen: false,
                  modes: [modeShown, modeHidden, modeShown], shown: 0},
-                {forceShow: false, fullscreen: true,
+                {forceShow: false, isFullScreen: true,
                  modes: [modeHidden, modeHidden, modeHidden], shown: 0},
-                {forceShow: true, fullscreen: true,
+                {forceShow: true, isFullScreen: true,
                  modes: [modeHidden, modeHidden, modeShown], shown: 0},
             ]
         }
 
         function test_change_forceHide(data) {
             controller.forceShow = data.forceShow
-            webviewMock.fullscreen = data.fullscreen
+            webviewMock.isFullScreen = data.isFullScreen
             showSpy.clear()
             controller.forceHide = false
             compare(webviewMock.locationBarController.mode, data.modes[0])
@@ -121,20 +118,20 @@ ChromeController {
 
         function test_change_forceShow_data() {
             return [
-                {forceHide: false, fullscreen: false,
+                {forceHide: false, isFullScreen: false,
                  modes: [modeAuto, modeShown, modeAuto], shown: 1},
-                {forceHide: true, fullscreen: false,
+                {forceHide: true, isFullScreen: false,
                  modes: [modeHidden, modeHidden, modeHidden], shown: 0},
-                {forceHide: false, fullscreen: true,
+                {forceHide: false, isFullScreen: true,
                  modes: [modeHidden, modeShown, modeShown], shown: 0},
-                {forceHide: true, fullscreen: true,
+                {forceHide: true, isFullScreen: true,
                  modes: [modeHidden, modeHidden, modeHidden], shown: 0},
             ]
         }
 
         function test_change_forceShow(data) {
             controller.forceHide = data.forceHide
-            webviewMock.fullscreen = data.fullscreen
+            webviewMock.isFullScreen = data.isFullScreen
             showSpy.clear()
             controller.forceShow = false
             compare(webviewMock.locationBarController.mode, data.modes[0])
@@ -175,69 +172,35 @@ ChromeController {
         }
 
         function test_change_fullscreen(data) {
-            webviewMock.fullscreen = false
+            webviewMock.isFullScreen = false
             controller.forceHide = data.forceHide
             controller.forceShow = data.forceShow
             controller.defaultMode = data.defaultMode
             showSpy.clear()
-            webviewMock.fullscreen = true
+            webviewMock.isFullScreen = true
             compare(webviewMock.locationBarController.mode, modeHidden)
             compare(showSpy.count, 0)
-            webviewMock.fullscreen = false
+            webviewMock.isFullScreen = false
             compare(webviewMock.locationBarController.mode, data.mode)
             compare(showSpy.count, data.shown ? 1 : 0)
-        }
-
-        function test_loading_state_changed_data() {
-            return [
-                {forceHide: false, forceShow: false, fullscreen: false,
-                 mode: modeAuto, shown: true},
-                {forceHide: false, forceShow: false, fullscreen: false,
-                 mode: modeShown, shown: false},
-                {forceHide: false, forceShow: false, fullscreen: false,
-                 mode: modeHidden, shown: false},
-                {forceHide: true, forceShow: false, fullscreen: false,
-                 mode: modeHidden, shown: false},
-                {forceHide: false, forceShow: true, fullscreen: false,
-                 mode: modeShown, shown: false},
-                {forceHide: false, forceShow: false, fullscreen: true,
-                 mode: modeHidden, shown: false},
-                {forceHide: true, forceShow: true, fullscreen: false,
-                 mode: modeHidden, shown: false},
-                {forceHide: true, forceShow: false, fullscreen: true,
-                 mode: modeHidden, shown: false},
-                {forceHide: false, forceShow: true, fullscreen: true,
-                 mode: modeShown, shown: false},
-                {forceHide: true, forceShow: true, fullscreen: true,
-                 mode: modeHidden, shown: false},
-            ]
-        }
-
-        function test_loading_state_changed(data) {
-            controller.forceHide = data.forceHide
-            controller.forceShow = data.forceShow
-            webviewMock.fullscreen = data.fullscreen
-            webviewMock.locationBarController.mode = data.mode
-            showSpy.clear()
-            webviewMock.loading = true
-            compare(showSpy.count, data.shown ? 1 : 0)
-            compare(webviewMock.locationBarController.mode, data.mode)
-            showSpy.clear()
-            webviewMock.loading = false
-            compare(showSpy.count, 0)
-            compare(webviewMock.locationBarController.mode, data.mode)
         }
 
         function test_load_event_data() {
             var data = []
-            var booleanValues = [false, true]
-            var modeValues = [modeAuto, modeHidden, modeShown]
-            for (var i in booleanValues) {
-                for (var j in booleanValues) {
-                    for (var k in modeValues) {
-                        for (var l in modeValues) {
-                            data.push({forceHide: booleanValues[i], forceShow: booleanValues[j],
-                                       initialMode: modeValues[k], defaultMode: modeValues[l]})
+            var forceHideValues = [false, true];
+            var forceShowValues = [false, true];
+            var initialḾodeValues = [modeAuto, modeHidden, modeShown];
+            var defaultḾodeValues = [modeAuto, modeHidden, modeShown];
+            var isFullScreenValues = [false, true];
+
+            for (var i in forceHideValues) {
+                for (var j in forceShowValues) {
+                    for (var k in initialḾodeValues) {
+                        for (var l in defaultḾodeValues) {
+                            for (var m in isFullScreenValues) {
+                                data.push({forceHide: forceHideValues[i], forceShow: forceShowValues[j], initialMode: initialḾodeValues[k], 
+                                           defaultMode: defaultḾodeValues[l], isFullScreen: isFullScreenValues[m]});
+                            }
                         }
                     }
                 }
@@ -246,47 +209,49 @@ ChromeController {
         }
 
         function test_load_event(data) {
-            // event types
-            var started = Oxide.LoadEvent.TypeStarted
-            var committed = Oxide.LoadEvent.TypeCommitted
-            var succeeded = Oxide.LoadEvent.TypeSucceeded
-            var stopped = Oxide.LoadEvent.TypeStopped
-            var failed = Oxide.LoadEvent.TypeFailed
-            var redirected = Oxide.LoadEvent.TypeRedirected
+            // WebEngineLoadRequest status enum
+            var started = WebEngineLoadRequest.LoadStartedStatus;
+            var succeeded = WebEngineLoadRequest.LoadSucceededStatus;
+            var failed = WebEngineLoadRequest.LoadFailedStatus;
 
-            controller.forceHide = data.forceHide
-            controller.forceShow = data.forceShow
-            controller.defaultMode = data.defaultMode
-            webviewMock.locationBarController.mode = data.initialMode
-            showSpy.clear()
+            controller.forceHide = data.forceHide;
+            controller.forceShow = data.forceShow;
+            controller.defaultMode = data.defaultMode;
+            webviewMock.locationBarController.mode = data.initialMode;
+            webviewMock.isFullScreen = data.isFullScreen;
 
             function test_sequence(sequence, modes) {
-                for (var i in sequence) {
-                    webviewMock.loadEvent({type: sequence[i]})
+                 for (var i in sequence) {
+                    
+                    console.log("data: " + JSON.stringify(data))
+                    var previousMode = webviewMock.locationBarController.mode;
+                    showSpy.clear();
+                    webviewMock.loadingChanged({status: sequence[i]});
+                    
+                    // check the mode
                     if (data.forceHide || data.forceShow) {
-                        compare(webviewMock.locationBarController.mode, data.initialMode)
+                        compare(webviewMock.locationBarController.mode, data.isFullScreen ? modeHidden : data.initialMode);
                     } else {
-                        compare(webviewMock.locationBarController.mode, modes[i])
+                        compare(webviewMock.locationBarController.mode, modes[i]);
                     }
-                    compare(showSpy.count, 0)
+                    
+                    // check the show() call count
+                    if ((sequence[i] === started) && !data.forceHide && !data.forceShow && !data.isFullScreen && (previousMode === modeAuto) ) {
+                        compare(showSpy.count, 1);
+                    } else {
+                        compare(showSpy.count, 0);
+                    }
+
                 }
             }
 
-            var sequence = [started, committed, succeeded]
-            var modes = [modeShown, data.defaultMode, data.defaultMode]
-            test_sequence(sequence, modes)
+            var sequence = [started, succeeded];
+            var modes = [modeShown, data.defaultMode];
+            test_sequence(sequence, modes);
 
-            sequence = [started, stopped]
-            modes = [modeShown, data.defaultMode]
-            test_sequence(sequence, modes)
-
-            sequence = [started, failed, committed]
-            modes = [modeShown, modeShown, data.defaultMode]
-            test_sequence(sequence, modes)
-
-            sequence = [started, redirected, committed, succeeded]
-            modes = [modeShown, modeShown, data.defaultMode, data.defaultMode]
-            test_sequence(sequence, modes)
+            sequence = [started, failed];
+            modes = [modeShown, data.defaultMode];
+            test_sequence(sequence, modes);
         }
     }
 }
