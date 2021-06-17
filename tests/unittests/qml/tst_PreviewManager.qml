@@ -20,6 +20,7 @@ import QtQuick 2.4
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import "../../../src/app/webbrowser"
+import webbrowsercommon.private 0.1
 import webbrowserapp.private 0.1
 import webbrowsertest.private 0.1
 
@@ -69,7 +70,9 @@ Item {
                 HistoryModel.add(url, "Example Com" + i, "")
                 if (createPreviewFiles) {
                     var path = PreviewManager.previewPathFromUrl(url)
+                    console.log("the preview path " + path + " for url " + url + " is created.")
                     TestContext.createFile(path)
+                    verify(FileOperations.exists(Qt.resolvedUrl(path)))
                 }
             }
         }

@@ -15,25 +15,25 @@ set(XVFB_COMMAND ${XVFBRUN} -s "-screen 0 640x480x24" -a)
 set(TEST tst_QmlTests)
 set(SOURCES
     ${webbrowser-common_SOURCE_DIR}/favicon-fetcher.cpp
-    ${webbrowser-app_SOURCE_DIR}/bookmarks-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/bookmarks-folder-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/bookmarks-folderlist-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/file-operations.cpp
-    ${webbrowser-app_SOURCE_DIR}/history-domain-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/history-domainlist-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/history-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/history-lastvisitdatelist-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/limit-proxy-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/reparenter.cpp
-    ${webbrowser-app_SOURCE_DIR}/searchengine.cpp
-    ${webbrowser-app_SOURCE_DIR}/tabs-model.cpp
-    ${webbrowser-app_SOURCE_DIR}/text-search-filter-model.cpp
+    ${morph-browser_SOURCE_DIR}/bookmarks-model.cpp
+    ${morph-browser_SOURCE_DIR}/bookmarks-folder-model.cpp
+    ${morph-browser_SOURCE_DIR}/bookmarks-folderlist-model.cpp
+    ${webbrowser-common_SOURCE_DIR}/file-operations.cpp
+    ${morph-browser_SOURCE_DIR}/history-domain-model.cpp
+    ${morph-browser_SOURCE_DIR}/history-domainlist-model.cpp
+    ${morph-browser_SOURCE_DIR}/history-model.cpp
+    ${morph-browser_SOURCE_DIR}/history-lastvisitdatelist-model.cpp
+    ${morph-browser_SOURCE_DIR}/limit-proxy-model.cpp
+    ${morph-browser_SOURCE_DIR}/reparenter.cpp
+    ${morph-browser_SOURCE_DIR}/searchengine.cpp
+    ${morph-browser_SOURCE_DIR}/tabs-model.cpp
+    ${morph-browser_SOURCE_DIR}/text-search-filter-model.cpp
     tst_QmlTests.cpp
 )
 add_executable(${TEST} ${SOURCES})
 include_directories(
     ${webbrowser-common_SOURCE_DIR}
-    ${webbrowser-app_SOURCE_DIR}
+    ${morph-browser_SOURCE_DIR}
     ${unity8_SOURCE_DIR}/plugins
 )
 target_link_libraries(${TEST}

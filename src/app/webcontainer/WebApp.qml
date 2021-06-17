@@ -369,6 +369,7 @@ Common.BrowserView {
                         left: parent.left
                         right: parent.right
                     }
+                    visible: state !== "hidden"
                     height: (state === "hidden") ? 0 : units.gu(6)
                     y: webapp.currentWebview ? containerWebView.currentWebview.locationBarController.offset : 0
                     availableHeight: containerWebView.height
@@ -491,7 +492,7 @@ Common.BrowserView {
                 if (webapp.currentWebview.isFullScreen) {
                     chromeLoader.item.state = "hidden";
                 } else {
-                    chromeLoader.item.state === "shown";
+                    chromeLoader.item.state = "shown";
                 }
             }
        }

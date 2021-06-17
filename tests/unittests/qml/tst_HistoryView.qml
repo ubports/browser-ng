@@ -47,18 +47,6 @@ FocusScope {
         signalName: "seeMoreEntriesClicked"
     }
 
-    SignalSpy {
-        id: newTabRequestedSpy
-        target: historyView
-        signalName: "newTabRequested"
-    }
-
-    SignalSpy {
-        id: backSpy
-        target: historyView
-        signalName: "back"
-    }
-
     WebbrowserTestCase {
         name: "HistoryView"
         when: windowShown
@@ -74,7 +62,6 @@ FocusScope {
             waitForRendering(domainsList)
             tryCompare(domainsList, "count", 3)
             compare(seeMoreEntriesClickedSpy.count, 0)
-            compare(backSpy.count, 0)
         }
 
         function populate() {
@@ -88,20 +75,6 @@ FocusScope {
             historyViewLoader.active = false
             HistoryModel.databasePath = ""
             seeMoreEntriesClickedSpy.clear()
-            backSpy.clear()
-        }
-
-        function test_back() {
-            var button = findChild(historyView, "doneButton")
-            clickItem(button)
-            compare(backSpy.count, 1)
-        }
-
-        function test_new_tab() {
-            var action = findChild(historyView, "newTabAction")
-            clickItem(action)
-            compare(newTabRequestedSpy.count, 1)
-            compare(backSpy.count, 1)
         }
 
         function test_see_more_entries() {
@@ -134,27 +107,30 @@ FocusScope {
         }
 
         function test_delete_multiple_domains() {
+            skip("does not work reliably on server builds")
             var listview = findChild(historyView, "domainsListView")
             var domains = getListItems(listview, "historyViewDomainDelegate")
-            var first = domains[0]
+            var first = domains[0], third = domains[2]
             verify(!first.selectMode)
 
             longPressItem(first)
             tryCompare(first, "selectMode", true)
             tryCompare(first, "selected", true)
-            var third = domains[2]
             verify(!third.selected)
 
             clickItem(third)
             tryCompare(third, "selected", true)
 
             var deleteButton = findChild(historyView, "delete_button")
+            verify(deleteButton.enabled)
+            
             clickItem(deleteButton)
             tryCompare(first, "selectMode", false)
             tryCompare(HistoryModel, "count", 1)
         }
 
         function test_select_all() {
+            skip("there are sporadic fails (armhf / arm64) on server builds")
             var listview = findChild(historyView, "domainsListView")
             var domains = getListItems(listview, "historyViewDomainDelegate")
             var first = domains[0], second = domains[1], third = domains[2]
@@ -170,7 +146,8 @@ FocusScope {
 
             var selectAllButton = findChild(historyView, "selectAll_button")
             clickItem(selectAllButton)
-            verify(first.selected)
+            //QmlTests::HistoryView::test_select_all() property selected     Actual   (): false    Expected (): true
+            tryCompare(first, "selected", true)
             tryCompare(second, "selected", true)
             tryCompare(third, "selected", true)
 

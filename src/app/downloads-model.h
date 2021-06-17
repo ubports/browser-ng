@@ -65,7 +65,6 @@ public:
 
     Q_INVOKABLE bool contains(const QString& downloadId) const;
     Q_INVOKABLE void add(const QString& downloadId, const QUrl& url, const QString& path, const QString& mimetype, bool incognito);
-    Q_INVOKABLE void moveToDownloads(const QString& downloadId, const QString& path);
     Q_INVOKABLE void setComplete(const QString& downloadId, const bool complete);
     Q_INVOKABLE void setError(const QString& downloadId, const QString& error);
     Q_INVOKABLE void deleteDownload(const QString& path);

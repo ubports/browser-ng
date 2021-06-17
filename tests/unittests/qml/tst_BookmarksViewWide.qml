@@ -39,18 +39,6 @@ Item {
         signalName: "bookmarkEntryClicked"
     }
 
-    SignalSpy {
-        id: backSpy
-        target: view
-        signalName: "back"
-    }
-
-    SignalSpy {
-        id: newTabClickedSpy
-        target: view
-        signalName: "newTabClicked"
-    }
-
     WebbrowserTestCase {
         name: "BookmarksViewWide"
         when: windowShown
@@ -60,8 +48,6 @@ Item {
             populate()
             view.forceActiveFocus()
             compare(bookmarkEntryClickedSpy.count, 0)
-            compare(backSpy.count, 0)
-            compare(newTabClickedSpy.count, 0)
         }
 
         function populate() {
@@ -74,20 +60,6 @@ Item {
         function cleanup() {
             BookmarksModel.databasePath = ""
             bookmarkEntryClickedSpy.clear()
-            backSpy.clear()
-            newTabClickedSpy.clear()
-        }
-
-        function test_back() {
-            var button = findChild(view, "doneButton")
-            clickItem(button)
-            compare(backSpy.count, 1)
-        }
-
-        function test_new_tab() {
-            var action = findChild(view, "newTabAction")
-            clickItem(action)
-            compare(newTabClickedSpy.count, 1)
         }
 
         function test_click_bookmark() {

@@ -26,10 +26,8 @@ Item {
 
     property var webview: null
 
-    readonly property bool killed: webview && false
-                                   //(webview.webProcessStatus == Oxide.WebView.WebProcessKilled)
-    readonly property bool crashed: webview && false
-                                    //(webview.webProcessStatus == Oxide.WebView.WebProcessCrashed)
+    readonly property bool killed: webview && internal.killed
+    readonly property bool crashed: webview && internal.crashed
 
     // When the renderer process is killed (most likely by the system’s
     // OOM killer), try to reload the page once, and if this results in
@@ -41,16 +39,30 @@ Item {
     QtObject {
         id: internal
         property int killedRetries: 0
+        property bool killed
+        property bool crashed
     }
 
     Connections {
         target: webview
         onRenderProcessTerminated: {
              if (terminationStatus == WebEngineView.KilledTerminationStatus) {
+                internal.killed = true;
                 if (internal.killedRetries == 0) {
                     // Do not attempt reloading right away, this would result in a crash
-                    delayedReload.restart()
+                    delayedReload.restart();
                 }
+            }
+            if (terminationStatus == WebEngineView.CrashedTerminationStatus) {
+                internal.crashed = true;
+            }
+        }
+        
+        onLoadingChanged: {
+            if ((loadRequest.status == WebEngineLoadRequest.LoadSucceededStatus) ||
+                (loadRequest.status == WebEngineLoadRequest.LoadFailedStatus)) {
+                internal.killed = false;
+                internal.crashed = false;
             }
         }
     }
@@ -73,6 +85,8 @@ Item {
 
     onWebviewChanged: {
         internal.killedRetries = 0
+        internal.killed = false
+        internal.crashed = false
         delayedReload.stop()
         monitorTimer.stop()
     }

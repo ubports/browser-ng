@@ -26,7 +26,7 @@ Item {
 
     Item {
         id: webviewMock
-        property url hoveredUrl
+        signal linkHovered(url hoveredUrl)
     }
 
     Loader {
@@ -58,7 +58,6 @@ Item {
         function init() {
             visibleSpy.clear()
             stateSpy.clear()
-            webviewMock.hoveredUrl = ""
             loader.active = true
         }
 
@@ -72,13 +71,13 @@ Item {
             verify(!label.visible)
             compare(visibleSpy.count, 0)
 
-            webviewMock.hoveredUrl = "http://example.org"
+            webviewMock.linkHovered("http://example.org")
             compare(label.state, "collapsed")
             compare(stateSpy.count, 1)
             verify(label.visible)
             compare(visibleSpy.count, 1)
 
-            webviewMock.hoveredUrl = "http://example.com"
+            webviewMock.linkHovered("http://example.com")
             compare(label.state, "collapsed")
             compare(stateSpy.count, 1)
             verify(label.visible)
@@ -91,13 +90,13 @@ Item {
             verify(label.visible)
             compare(visibleSpy.count, 1)
 
-            webviewMock.hoveredUrl = "http://ubuntu.com"
+            webviewMock.linkHovered("http://ubuntu.com")
             compare(label.state, "expanded")
             compare(stateSpy.count, 1)
             verify(label.visible)
             compare(visibleSpy.count, 1)
 
-            webviewMock.hoveredUrl = ""
+            webviewMock.linkHovered("")
             compare(label.state, "hidden")
             compare(stateSpy.count, 2)
             verify(!label.visible)

@@ -18,7 +18,7 @@
 
 import QtQuick 2.4
 import QtTest 1.0
-import com.canonical.Oxide 1.8 as Oxide
+import QtWebEngine 1.5
 import "../../../src/app"
 
 WebProcessMonitor {
@@ -27,20 +27,18 @@ WebProcessMonitor {
     Item {
         id: webviewMock
 
-        property int webProcessStatus
-
         property int reloadCalled
         function reload() {
-            webProcessStatus = Oxide.WebView.WebProcessRunning
             reloadCalled++
         }
+        signal loadingChanged(var loadRequest)
+        signal renderProcessTerminated(int terminationStatus)
     }
 
     TestCase {
         name: "WebProcessMonitor"
 
         function init() {
-            webviewMock.webProcessStatus = Oxide.WebView.WebProcessRunning
             webviewMock.reloadCalled = 0
         }
 
@@ -55,16 +53,19 @@ WebProcessMonitor {
             monitor.webview = webviewMock
             compare(monitor.killedRetries, 0)
 
-            webviewMock.webProcessStatus = Oxide.WebView.WebProcessKilled
+            webviewMock.renderProcessTerminated(WebEngineView.KilledTerminationStatus)
             verify(monitor.killed)
             verify(!monitor.crashed)
-            tryCompare(monitor, "killedRetries", 1)
-            tryCompare(webviewMock, "reloadCalled", 1)
+            wait(200)
+            compare(monitor.killedRetries, 1)
+            compare(webviewMock.reloadCalled, 1)
+            
+            webviewMock.loadingChanged({status: WebEngineLoadRequest.LoadFailedStatus})
             verify(!monitor.killed)
             verify(!monitor.crashed)
             compare(monitor.killedRetries, 1)
 
-            webviewMock.webProcessStatus = Oxide.WebView.WebProcessKilled
+            webviewMock.renderProcessTerminated(WebEngineView.KilledTerminationStatus)
             verify(monitor.killed)
             verify(!monitor.crashed)
             compare(monitor.killedRetries, 1)
@@ -75,13 +76,13 @@ WebProcessMonitor {
             monitor.webview = webviewMock
             compare(monitor.killedRetries, 0)
 
-            webviewMock.webProcessStatus = Oxide.WebView.WebProcessCrashed
+            webviewMock.renderProcessTerminated(WebEngineView.CrashedTerminationStatus)
             verify(!monitor.killed)
             verify(monitor.crashed)
             compare(monitor.killedRetries, 0)
             compare(webviewMock.reloadCalled, 0)
 
-            webviewMock.webProcessStatus = Oxide.WebView.WebProcessRunning
+            webviewMock.loadingChanged({status: WebEngineLoadRequest.LoadSucceededStatus})
             verify(!monitor.killed)
             verify(!monitor.crashed)
             compare(monitor.killedRetries, 0)
@@ -94,7 +95,7 @@ WebProcessMonitor {
             verify(!monitor.killed)
             verify(!monitor.crashed)
 
-            webviewMock.webProcessStatus = Oxide.WebView.WebProcessKilled
+            webviewMock.renderProcessTerminated(WebEngineView.KilledTerminationStatus)
             verify(monitor.killed)
             verify(!monitor.crashed)
             tryCompare(monitor, "killedRetries", 1)

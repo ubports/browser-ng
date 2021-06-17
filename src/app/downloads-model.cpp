@@ -251,13 +251,30 @@ void DownloadsModel::setComplete(const QString& downloadId, const bool complete)
         if (entry.complete == complete) {
             return;
         }
+        QVector<int> updatedRoles;
+        
         entry.complete = complete;
-        Q_EMIT dataChanged(this->index(index, 0), this->index(index, 0), QVector<int>() << Complete);
+        updatedRoles.append(Complete);
+
+        // Override reported mimetype from server with detected mimetype from file once downloaded
+        if (complete && QFile::exists(entry.path))
+        {
+            QFileInfo fi(entry.path);
+            QMimeDatabase mimeDatabase;
+            QString mimetype = mimeDatabase.mimeTypeForFile(fi).name();
+            if (mimetype != entry.mimetype) {
+                entry.mimetype = mimetype;
+                updatedRoles.append(Mimetype);
+            }
+        }
+        
+        Q_EMIT dataChanged(this->index(index, 0), this->index(index, 0), QVector<int>() << updatedRoles);
         if (!entry.incognito) {
             QSqlQuery query(m_database);
-            static QString updateStatement = QLatin1String("UPDATE downloads SET complete=? WHERE downloadId=?;");
+            static QString updateStatement = QLatin1String("UPDATE downloads SET complete=?, mimetype=? WHERE downloadId=?;");
             query.prepare(updateStatement);
-            query.addBindValue(complete);
+            query.addBindValue(entry.complete);
+            query.addBindValue(entry.mimetype);
             query.addBindValue(downloadId);
             query.exec();
         }
@@ -282,63 +299,6 @@ void DownloadsModel::setError(const QString& downloadId, const QString& error)
             query.addBindValue(downloadId);
             query.exec();
         }
-    }
-}
-
-void DownloadsModel::moveToDownloads(const QString& downloadId, const QString& path)
-{
-    int index = getIndexForDownloadId(downloadId);
-    if (index == -1) {
-        return;
-    }
-    QFile file(path);
-    if (file.exists()) {
-        QFileInfo fi(path);
-        DownloadEntry& entry = m_orderedEntries[index];
-        QVector<int> updatedRoles;
-
-        // Override reported mimetype from server with detected mimetype from file once downloaded
-        QMimeDatabase mimeDatabase;
-        QString mimetype = mimeDatabase.mimeTypeForFile(fi).name();
-        if (mimetype != entry.mimetype) {
-            entry.mimetype = mimetype;
-            updatedRoles.append(Mimetype);
-        }
-
-        // Move file to XDG Downloads folder
-        QDir dir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
-        if (!dir.exists()) {
-            QDir::root().mkpath(dir.absolutePath());
-        }
-        QString baseName = fi.baseName();
-        QString suffix = fi.completeSuffix();
-        QString destination = dir.absoluteFilePath(QString("%1.%2").arg(baseName, suffix));
-        // Avoid filename collision by automatically inserting an incremented
-        // number into the filename if the original name already exists.
-        int append = 1;
-        while (QFile::exists(destination)) {
-            destination = dir.absoluteFilePath(QString("%1.%2.%3").arg(baseName, QString::number(append++), suffix));
-        }
-        if (file.rename(destination)) {
-            entry.path = destination;
-            updatedRoles.append(Path);
-        } else {
-            qWarning() << "Failed moving file from" << path << "to" << destination;
-        }
-
-        Q_EMIT dataChanged(this->index(index, 0), this->index(index, 0), updatedRoles);
-        if (!entry.incognito && !updatedRoles.isEmpty()) {
-            QSqlQuery query(m_database);
-            static QString updateStatement = QLatin1String("UPDATE downloads SET mimetype = ?, "
-                                                           "path = ? WHERE downloadId = ?");
-            query.prepare(updateStatement);
-            query.addBindValue(mimetype);
-            query.addBindValue(destination);
-            query.addBindValue(downloadId);
-            query.exec();
-        }
-    } else {
-        qWarning() << "Download not found:" << path;
     }
 }
 

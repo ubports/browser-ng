@@ -36,7 +36,7 @@ Item {
         }
         function contains(url) {
             for (var i = 0; i < topSites.count; i++) {
-                if (topSites.get(i).url === url) return true
+                if (topSites.get(i).url == url) return true
             }
             return false
         }

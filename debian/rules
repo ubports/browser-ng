@@ -46,4 +46,4 @@ override_dh_clean:
 
 override_dh_auto_test:
 	mkdir -p $(BUILDHOME)
-	HOME=$(BUILDHOME) dh_auto_test -- ARGS+=-VV
+	HOME=$(BUILDHOME) dh_auto_test --no-parallel -- ARGS+=-VV
