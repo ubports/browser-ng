@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: morph-browser\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-18 19:58+0000\n"
-"PO-Revision-Date: 2021-05-29 18:40+0000\n"
+"PO-Revision-Date: 2021-06-30 19:36+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <https://translate.ubports.com/projects/ubports/"
 "morph-browser/nl/>\n"
@@ -38,8 +38,7 @@ msgstr "Aangepaste url-schema's"
 #: src/app/AllowCustomSchemesDialog.qml:30
 #, qt-format
 msgid "The site '%1' is trying to open the following URL with a custom scheme:"
-msgstr ""
-"De website '%1' probeert de volgende url te openen met een aangepast schema:"
+msgstr "‘%1’ probeert de volgende url te openen met een aangepast schema:"
 
 #: src/app/AllowCustomSchemesDialog.qml:32
 msgid ""
@@ -88,8 +87,8 @@ msgid ""
 "Would you like to continue to block the domain, allow browsing to the "
 "domain, or go back?"
 msgstr ""
-"Je probeert %1 te bezoeken, maar dit domein staat niet op je witte lijst. "
-"Wil je het domein blijven blokkeren, toestaan of teruggaan?"
+"Je probeert ‘%1’ te bezoeken, maar dit domein staat niet op je witte lijst. "
+"Wil je het blijven blokkeren, toestaan of teruggaan?"
 
 #: src/app/AllowOrBlockDomainDialog.qml:31
 #, qt-format
@@ -114,7 +113,7 @@ msgstr "Authenticatie vereist."
 #: src/app/AuthenticationDialog.qml:26
 #, qt-format
 msgid "The website %1 requires authentication."
-msgstr "De website '%1' vereist authenticatie."
+msgstr "‘%1’ vereist authenticatie."
 
 #: src/app/AuthenticationDialog.qml:34 src/app/HttpAuthenticationDialog.qml:50
 msgid "Username"
@@ -147,8 +146,8 @@ msgid ""
 "You are trying to securely reach %1, but the security certificate of this "
 "website is not trusted. Reason: %2"
 msgstr ""
-"Je probeert '%1' op een veilige manier te bereiken, maar het "
-"beveiligingscertificaat van deze website is onvertrouwd. Reden: %2"
+"Je probeert ‘%1’ op een veilige manier te bereiken, maar het "
+"beveiligingscertificaat van deze website wordt niet vertrouwd. Reden: %2"
 
 #: src/app/CertificateVerificationDialog.qml:39
 #: src/app/InvalidCertificateErrorSheet.qml:160
@@ -188,7 +187,7 @@ msgstr "Geef de nieuwe gebruikersagent een naam"
 
 #: src/app/CustomUserAgentsPage.qml:207
 msgid "enter user agent string..."
-msgstr "Voer een gebruikersagent in..."
+msgstr "Voer een gebruikersagent in…"
 
 #: src/app/CustomUserAgentsPage.qml:248
 msgid "No custom user agents available"
@@ -335,7 +334,7 @@ msgstr "Weigeren"
 #: src/app/HttpAuthenticationDialog.qml:27
 #, qt-format
 msgid "The website at %1 requires authentication. The website says \"%2\""
-msgstr "De website '%1' vereist authenticatie. De website meldt \"%2\""
+msgstr "‘%1’ vereist authenticatie en meldt “%2”"
 
 #: src/app/InvalidCertificateErrorSheet.qml:55
 msgid "This site security certificate is not trusted.\n"
@@ -470,7 +469,7 @@ msgstr "De proxy vereist authenticatie."
 #: src/app/ProxyAuthenticationDialog.qml:24
 #, qt-format
 msgid "The website %1:%2 requires authentication."
-msgstr "De website '%1:%2' vereist authenticatie."
+msgstr "‘%1:%2’ vereist authenticatie."
 
 #: src/app/SavePageDialog.qml:24
 msgid "Save page as HTML / PDF"
@@ -836,8 +835,8 @@ msgstr "Witte lijst-domein"
 msgid ""
 "domain %1 is now whitelisted, it will be active on the next page reload."
 msgstr ""
-"Het domein '%1' staat nu op de witte lijst. Dit wordt behouden tot de "
-"volgende paginaherlading."
+"‘%1’ staat op de witte lijst. Deze instelling wordt behouden tot je de "
+"pagina herlaadt."
 
 #: src/app/webbrowser/Browser.qml:729
 msgid "New window"
@@ -872,13 +871,14 @@ msgstr "(%1)"
 
 #: src/app/webbrowser/Browser.qml:1830
 msgid "the file is already in the downloads folder."
-msgstr "Dit bestand is al opgeslagen in de map 'Downloads'."
+msgstr "Dit bestand is al opgeslagen in de map ‘Downloads’."
 
 #: src/app/webbrowser/ContentDownloadDialog.qml:83
 msgid ""
 "Choose an application to open this file or add it to the downloads folder."
 msgstr ""
-"Kies een app om dit bestand te openen of sla het op in de map 'Downloads'."
+"Kies een app om dit bestand mee te openen of sla het op in de map "
+"‘Downloads’."
 
 #: src/app/webbrowser/ContentDownloadDialog.qml:89
 msgid "Choose an application"
@@ -1195,7 +1195,9 @@ msgstr "Oeps, er is iets misgegaan."
 #: src/app/webcontainer/WebViewImplOxide.qml:338
 #, qt-format
 msgid "domain %1 is now whitelisted, please reload the page."
-msgstr "Het domein '%1' staat nu op de witte lijst. Herlaad de pagina."
+msgstr ""
+"‘%1’ staat nu op de witte lijst.\n"
+"Herlaad de pagina."
 
 #: src/app/webcontainer/WebappSettingsPage.qml:38
 msgid "WebappContainer Settings"

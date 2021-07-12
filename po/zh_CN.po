@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: morph-browser\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-18 19:58+0000\n"
-"PO-Revision-Date: 2021-06-14 20:30+0000\n"
-"Last-Translator: Ito Rimai <ItoRimai@foxmail.com>\n"
+"PO-Revision-Date: 2021-07-12 14:21+0000\n"
+"Last-Translator: Enceka <enceka@yeah.net>\n"
 "Language-Team: Chinese (Simplified) <https://translate.ubports.com/projects/"
 "ubports/morph-browser/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -536,16 +536,16 @@ msgstr "无"
 msgid ""
 "domain zoom (currently %1 and can be removed with reset button or from "
 "domain specific settings in privacy settings)"
-msgstr ""
+msgstr "域名缩放(当前为%1%并且可以用重置按钮或者在隐私设置的域名特定设置中移除)"
 
 #: src/app/ZoomControls.qml:189
 msgid " and resets domain zoom"
-msgstr ""
+msgstr " 并重设域缩放"
 
 #: src/app/ZoomControls.qml:189
 #, qt-format
 msgid "default zoom (currently %1%, can be changed from settings menu%2)"
-msgstr ""
+msgstr "默认缩放大小(当前为%1%，可以在设置菜单更改）"
 
 #: src/app/ZoomControls.qml:190
 msgid "the current web app"
@@ -554,7 +554,7 @@ msgstr "当前web应用"
 #: src/app/ZoomControls.qml:190
 #, qt-format
 msgid "Current zoom (%1%) can be saved for %2 as "
-msgstr ""
+msgstr "当前缩放大小(%1%)可以为%2保存为 "
 
 #: src/app/ZoomControls.qml:192
 msgid "or"
