@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: morph-browser\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-18 19:58+0000\n"
-"PO-Revision-Date: 2021-03-26 09:20+0000\n"
-"Last-Translator: vokaliz <vokaliz@protonmail.com>\n"
+"PO-Revision-Date: 2021-06-30 00:49+0000\n"
+"Last-Translator: Герман Семенов <GermanAizek@yandex.ru>\n"
 "Language-Team: Russian <https://translate.ubports.com/projects/ubports/"
 "morph-browser/ru/>\n"
 "Language: ru\n"
@@ -30,7 +30,7 @@ msgstr "Оповещение JavaScript"
 #: src/app/HttpAuthenticationDialog.qml:70 src/app/PromptDialog.qml:50
 #: src/app/webbrowser/BookmarkOptions.qml:122
 msgid "OK"
-msgstr "Да"
+msgstr "Хорошо"
 
 #: src/app/AllowCustomSchemesDialog.qml:24
 msgid "Custom URL schemes"
